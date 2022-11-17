@@ -38,6 +38,9 @@ void Setup::creation()
 
 }
 
+/**
+ * It creates a character and saves it in a csv file.
+ */
 Personnage::Personnage()
 {
     srand((unsigned) time(NULL));
@@ -94,6 +97,14 @@ string Personnage::getRace()
 {
     return m_race;
 }
+/**
+ * It takes an integer as an argument, checks if it's between 0 and 4, and if it is, returns the value
+ * of the corresponding stat
+ * 
+ * @param stat the stat you want to get the value of
+ * 
+ * @return The value of the stat.
+ */
 int Personnage::ValeurStat(int stat)
 {
     bool test = false;
