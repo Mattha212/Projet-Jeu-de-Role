@@ -5,5 +5,4 @@ class Setup
     public:
     Setup();
     void lire(std::string s);
-    void creation();
 };

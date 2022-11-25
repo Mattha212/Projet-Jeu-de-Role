@@ -4,17 +4,10 @@ using namespace std;
 
 Setup::Setup()
 {
-    ifstream fichier("Liste_texte.txt", ios::in);
-    string l;
-    while(getline(fichier,l))
-    {
-        m_map.insert(make_pair(l, l+".txt"));
-        //cout << l <<m_map.at(l) << endl;
-    }
-    lire("Introduction");
-{
 
-}
+    lire("Introduction");
+    lire("Creation_perso");
+    Personnage pj = Personnage();
 }
 void Setup::lire(string s)
 {
@@ -31,12 +24,6 @@ void Setup::lire(string s)
     }
 }
 
-void Setup::creation()
-{
-    lire("Creation_perso");
-    Personnage pj = Personnage();
-
-}
 
 /**
  * It creates a character and saves it in a csv file.
@@ -52,6 +39,7 @@ Personnage::Personnage()
     getline(cin,nom) ;
     fflush(stdin);
     m_nom=nom;
+    //rajouter le texte sur chacunes des races, peut être proposer des boutons? (options où on rentre un chiffre correspondants)
     cout << "Votre race:"<< endl;
     cin >> race;
     fflush(stdin);
@@ -67,6 +55,8 @@ Personnage::Personnage()
         stats.at(i).second = valeur;
 
     }
+    //selon la race, rajouter les bonus de base sur les stats -> créer une fonction modif_stat?
+     
     m_inventaire.setPoidsMax((stats[4].second)*15);
     m_stats = stats;
     m_vie = stats[4].second*50;
