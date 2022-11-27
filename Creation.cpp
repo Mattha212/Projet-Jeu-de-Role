@@ -2,14 +2,8 @@
 #include "Setup.hpp"
 using namespace std;
 
-Setup::Setup()
-{
 
-    lire("Introduction");
-    lire("Creation_perso");
-    Personnage pj = Personnage();
-}
-void Setup::lire(string s)
+void lire(string s)
 {
     string s1 = s + ".txt";
     ifstream flux(s1, ios::in);
@@ -23,7 +17,13 @@ void Setup::lire(string s)
         flux.close();
     }
 }
+Setup::Setup()
+{
 
+    lire("Introduction");
+    lire("Creation_perso");
+    Personnage pj = Personnage();
+}
 
 /**
  * It creates a character and saves it in a csv file.
@@ -40,8 +40,29 @@ Personnage::Personnage()
     fflush(stdin);
     m_nom=nom;
     //rajouter le texte sur chacunes des races, peut être proposer des boutons? (options où on rentre un chiffre correspondants)
-    cout << "Votre race:"<< endl;
-    cin >> race;
+
+    int bouton;
+    string s =  "1 : Precisions sur les humains 2 : Precisions sur les elfes 3: Precisions sur les orcs 0 : Entrer votre race";
+    cout << s << endl;
+    while(race.empty())
+    {
+        cin >> bouton;
+        switch(bouton)
+        {
+            case 1:
+            lire("Race_Humain");
+            break;
+            case 2:
+            lire("Race_Elfe");
+            break;
+            case 3:
+            lire("Race_Orc");
+            break;
+            case 0:
+             cout << "Votre race:"<< endl;
+            cin >> race;
+        }
+    }
     fflush(stdin);
     m_race=race;
     cout << "Votre age:"<< endl;
