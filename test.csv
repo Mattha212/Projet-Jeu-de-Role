@@ -1,7 +1,9 @@
 Nom;Age;Race;INT;AGI;VIT;CHA;CON;HP;
 
 
+m;1 ans;elfe;14;7;19;12;9;450;
 
-matt;7 ans;5;2;19;14;11;13;650;
+p;1 ans;elfe;6;14;4;11;20;1000;
 
-p;8 ans;Orc;10;12;14;14;15;750;
+j;1 ans;humain;13;16;19;2;4;200;
+ 

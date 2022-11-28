@@ -13,6 +13,7 @@ class Personnage
     public:
         Personnage();
         std::string getNom();
+        void ModifRace(std::vector<std::pair<std::string,int>> stat, std::string race);
         int getAge();
         std::string getRace();
         int ValeurStat(int stat);

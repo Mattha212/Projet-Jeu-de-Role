@@ -39,8 +39,6 @@ Personnage::Personnage()
     getline(cin,nom) ;
     fflush(stdin);
     m_nom=nom;
-    //rajouter le texte sur chacunes des races, peut être proposer des boutons? (options où on rentre un chiffre correspondants)
-
     int bouton;
     string s =  "1 : Precisions sur les humains 2 : Precisions sur les elfes 3: Precisions sur les orcs 0 : Entrer votre race";
     cout << s << endl;
@@ -65,10 +63,7 @@ Personnage::Personnage()
     }
     fflush(stdin);
     m_race=race;
-    cout << "Votre age:"<< endl;
-    cin >> age;
-    fflush(stdin);
-    m_age=age;
+    
     vector<pair<string, int>> stats = {{"INT",0},{"AGI",0},{"VIT",0},{"CHA",0},{"CON",0}};
     for(int i=0;i<5;i++)
     {
@@ -77,7 +72,11 @@ Personnage::Personnage()
 
     }
     //selon la race, rajouter les bonus de base sur les stats -> créer une fonction modif_stat?
-     
+    ModifRace(stats, m_race);
+    cout << "Votre age:"<< endl;
+    cin >> age;
+    fflush(stdin);
+    m_age=age;
     m_inventaire.setPoidsMax((stats[4].second)*15);
     m_stats = stats;
     m_vie = stats[4].second*50;
@@ -116,6 +115,12 @@ string Personnage::getRace()
  * 
  * @return The value of the stat.
  */
+void Personnage::ModifRace(vector<pair<string, int>> stats, string race)
+{
+    if(race == "elfe") cout << "elfe"<< endl;
+    else if(race == "orc") cout << "orc" << endl;
+    else if(race == "humain") cout << "humain"<<endl;
+}
 int Personnage::ValeurStat(int stat)
 {
     bool test = false;
