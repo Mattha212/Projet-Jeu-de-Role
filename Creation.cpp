@@ -64,31 +64,32 @@ Personnage::Personnage()
     fflush(stdin);
     m_race=race;
     
-    vector<pair<string, int>> stats = {{"INT",0},{"AGI",0},{"VIT",0},{"CHA",0},{"CON",0}};
-    for(int i=0;i<5;i++)
-    {
-        int valeur = rand()%20+1;
-        stats.at(i).second = valeur;
-
-    }
-    //selon la race, rajouter les bonus de base sur les stats -> créer une fonction modif_stat?
+    std::map<std::string, int> stats = {{"INT",0},{"AGI",0},{"VIT",0},{"CHA",0},{"CON",0}};
+    
+    
+    int valeur0 = rand()%20+1;int valeur1 = rand()%20+1;int valeur2 = rand()%20+1;int valeur3 = rand()%20+1;int valeur4 = rand()%20+1;
+    stats["INT"] = valeur0;stats["AGI"] = valeur1;stats["VIT"] = valeur2;stats["CHA"] = valeur3;stats["CON"] = valeur4;
+    //construire un menu pour déterminer quelle valeur va dans quel stat, peut être une fonction d'affichage de stat?
+    
     ModifRace(stats, m_race);
     cout << "Votre age:"<< endl;
     cin >> age;
     fflush(stdin);
     m_age=age;
-    m_inventaire.setPoidsMax((stats[4].second)*15);
+    m_inventaire.setPoidsMax(stats["CON"]*15);
     m_stats = stats;
-    m_vie = stats[4].second*50;
+    m_vie = stats["CON"]*50;
     ofstream MyExcelFile;
     MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app);
     MyExcelFile << "\n" + getNom() + ";" ;
     MyExcelFile << getAge() << " ans;";
     MyExcelFile <<  getRace() + ";";
-    for(int j=0;j<5;j++)
+    map<string, int>::iterator j = stats.begin();
+    while(j!=stats.end())
     {
-        MyExcelFile << stats[j].second << ";" ;
+        MyExcelFile << j->second << ";" ;
         fflush(stdin);
+        j++;
     }
     MyExcelFile << m_vie << ";";
     MyExcelFile << "\n";
@@ -115,28 +116,36 @@ string Personnage::getRace()
  * 
  * @return The value of the stat.
  */
-void Personnage::ModifRace(vector<pair<string, int>> stats, string race)
+void Personnage::ModifRace(map<string, int> stats, string race)
 {
-    if(race == "elfe") cout << "elfe"<< endl;
+    if(race == "elfe")
+    {
+        stats["CON"] += 1;
+        stats["VIT"] +=3 ;
+        stats["INT"] -=1;
+        cout<< "elfe" << endl;
+    }
     else if(race == "orc") cout << "orc" << endl;
     else if(race == "humain") cout << "humain"<<endl;
 }
-int Personnage::ValeurStat(int stat)
+int Personnage::ValeurStat(string stat)
 {
     bool test = false;
+    int i =0;
     while(test==false)
     {
-        if(stat<0 || stat>4)
+    map<string, int>::iterator j = m_stats.begin();
+    while(j!=m_stats.end())
+    {
+        if(stat==j->first)
         {
-            cout << "La valeur est incorrect, rentrez une valeur entre 0 et 4" << endl;
-            cin >> stat;
-        }
-        else
-        {
-            test=true;
+            i = j->second;
+            test= true;
+            break;
         }
     }
-    return m_stats[stat].second;
+    }
+    return i;
 } 
 void Personnage::recupererObjet(Objet obj)
 {
