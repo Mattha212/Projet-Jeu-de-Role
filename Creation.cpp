@@ -57,35 +57,67 @@ Personnage::Personnage()
             lire("Race_Orc");
             break;
             case 0:
-             cout << "Votre race:"<< endl;
+            cout << "Votre race:"<< endl;
             cin >> race;
         }
     }
     fflush(stdin);
     m_race=race;
-    
-    std::map<std::string, int> stats = {{"INT",0},{"AGI",0},{"VIT",0},{"CHA",0},{"CON",0}};
-    
-    
     int valeur0 = rand()%20+1;int valeur1 = rand()%20+1;int valeur2 = rand()%20+1;int valeur3 = rand()%20+1;int valeur4 = rand()%20+1;
-    stats["INT"] = valeur0;stats["AGI"] = valeur1;stats["VIT"] = valeur2;stats["CHA"] = valeur3;stats["CON"] = valeur4;
+    m_stats["AGI"]=m_stats["INT"]=m_stats["VIT"]=m_stats["CHA"]=m_stats["CON"]=-1;
+    map<int, int> v;
+    v[valeur0] ++;v[valeur1] ++;v[valeur2] ++;v[valeur3] ++;v[valeur4] ++;
+    bool test1 =false; 
+    while(!test1)
+    {
+        
+        map<int, int>::iterator it = v.begin();
+        while(it!= v.end())
+        {
+            cout << it->first << ": " << it->second << " ";
+            it++;
+        }
+        cout << endl;
+        afficheStats();
+        cout << "A quelle statistique voulez vous attribuer une valeur?"<< endl;
+        string a;
+        cin >> a; 
+        cout << "Quelle valeur voulez vous donner a cette statistique?"<< endl;
+        int b;
+        cin >> b;
+        if(v[b]>=0 && m_stats[a]) 
+        {
+            m_stats[a]=b;
+            switch(v[b])
+            {
+                case 0:
+                v.erase(b);
+                default:
+                v[b]--;
+            }
+        }
+        if(v[valeur0] +v[valeur1] +v[valeur2] + v[valeur3] +v[valeur4]<=0)test1=true;
+        
+    }
+    afficheStats();
     //construire un menu pour déterminer quelle valeur va dans quel stat, peut être une fonction d'affichage de stat?
+    ModifRace(m_race);
     
-    ModifRace(stats, m_race);
     cout << "Votre age:"<< endl;
     cin >> age;
     fflush(stdin);
     m_age=age;
-    m_inventaire.setPoidsMax(stats["CON"]*15);
-    m_stats = stats;
-    m_vie = stats["CON"]*50;
+    
+    m_inventaire.setPoidsMax(m_stats["CON"]*15);
+    
+    m_vie = m_stats["CON"]*50;
     ofstream MyExcelFile;
     MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app);
     MyExcelFile << "\n" + getNom() + ";" ;
     MyExcelFile << getAge() << " ans;";
     MyExcelFile <<  getRace() + ";";
-    map<string, int>::iterator j = stats.begin();
-    while(j!=stats.end())
+    map<string, int>::iterator j = m_stats.begin();
+    while(j!=m_stats.end())
     {
         MyExcelFile << j->second << ";" ;
         fflush(stdin);
@@ -116,37 +148,37 @@ string Personnage::getRace()
  * 
  * @return The value of the stat.
  */
-void Personnage::ModifRace(map<string, int> stats, string race)
+void Personnage::ModifRace(string race)
 {
+    
     if(race == "elfe")
     {
-        stats["CON"] += 1;
-        stats["VIT"] +=3 ;
-        stats["INT"] -=1;
-        cout<< "elfe" << endl;
+        m_stats["CON"] ++;
+        m_stats["VIT"] +=3 ;
+        m_stats["INT"] --;
     }
     else if(race == "orc") cout << "orc" << endl;
     else if(race == "humain") cout << "humain"<<endl;
+
+   
 }
 int Personnage::ValeurStat(string stat)
 {
-    bool test = false;
-    int i =0;
-    while(test==false)
-    {
-    map<string, int>::iterator j = m_stats.begin();
-    while(j!=m_stats.end())
-    {
-        if(stat==j->first)
-        {
-            i = j->second;
-            test= true;
-            break;
-        }
-    }
-    }
+    int i = m_stats[stat];
     return i;
 } 
+
+void Personnage::afficheStats()
+{
+ map<string, int>::iterator it = m_stats.begin();
+
+ while(it != m_stats.end())
+ {
+    cout << it->first << ": " << ValeurStat(it->first) << " ";
+    it++;
+ }   
+ cout << endl;
+}
 void Personnage::recupererObjet(Objet obj)
 {
     m_inventaire.addObjet(obj);

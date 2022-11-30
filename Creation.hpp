@@ -13,10 +13,11 @@ class Personnage
     public:
         Personnage();
         std::string getNom();
-        void ModifRace(std::map<std::string, int> stat, std::string race);
+        void ModifRace(std::string race);
         int getAge();
         std::string getRace();
         int ValeurStat(std::string stat);
+        void afficheStats();
         void recupererObjet(Objet obj);
         void jeterObjet(Objet obj);
         Inventaire getInventaire();
