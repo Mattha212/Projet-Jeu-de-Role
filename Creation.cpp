@@ -97,16 +97,18 @@ Personnage::Personnage()
         {
             cout << "ce n'est pas une stat valide!" << endl;
             m_stats.erase(a);
+            cout << "A quelle statistique voulez vous attribuer une valeur?"<< endl;
             cin >> a;
         }
         cout << "Quelle valeur voulez vous donner a cette statistique?"<< endl;
         int b;
-        cin >> b;
-        while(!v[b])
+        while(!(cin>>b) || b > 20)
         {
-            cout << "ce n'est pas une valeur disponible!" << endl;
             v.erase(b);
-            cin >> b;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "ce n'est pas une valeur disponible!" << endl;
+            cout << "Quelle valeur voulez vous donner a la statistique " + a + " ?"<< endl;
         }
         if(v[b]>=0 && m_stats[a]) 
         {
@@ -117,17 +119,16 @@ Personnage::Personnage()
                 v[b]--;
             }
             else{
-            m_stats[a]=b;
-            switch(v[b])
-            {
-                case 0:
-                v.erase(b);
-                default:
-                v[b]--;
-            }
+                m_stats[a]=b;
+                switch(v[b])
+                {
+                    case 0:
+                    v.erase(b);
+                    default:
+                    v[b]--;
+                }
         }}
         if(v[valeur0] +v[valeur1] +v[valeur2] + v[valeur3] +v[valeur4]<=0)test1=true;
-        
     }
     ModifRace(m_race);
     afficheStats();
