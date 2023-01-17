@@ -40,8 +40,9 @@ Personnage::Personnage()
     fflush(stdin);
     m_nom=nom;
     int bouton;
-    string s =  "1 : Precisions sur les humains 2 : Precisions sur les elfes 3: Precisions sur les orcs 0 : Entrer votre race";
+    const string s =  "1 : Precisions sur les humains 2 : Precisions sur les elfes 3: Precisions sur les orcs 0 : Entrer votre race";
     cout << s << endl;
+    vector<string> tab = {"elfe", "orc","humain"};
     while(race.empty())
     {
         cin >> bouton;
@@ -59,14 +60,24 @@ Personnage::Personnage()
             case 0:
             cout << "Votre race:"<< endl;
             cin >> race;
+            while(count(tab.begin(),tab.end(),race)<1)
+            {
+                cout << "Ce n'est pas une race disponible!" << endl;
+                cin >> race;
+            }
+            break;
+            default:
+            cout << "Ce n est pas un choix possible"<< endl;
         }
     }
     fflush(stdin);
-    m_race=race;
-    int valeur0 = rand()%20+1;int valeur1 = rand()%20+1;int valeur2 = rand()%20+1;int valeur3 = rand()%20+1;int valeur4 = rand()%20+1;
+    int valeur0 = rand()%20+1;int valeur1 = rand()%20+1;
+    int valeur2 = rand()%20+1;int valeur3 = rand()%20+1;int valeur4 = rand()%20+1;
     m_stats["AGI"]=m_stats["INT"]=m_stats["VIT"]=m_stats["CHA"]=m_stats["CON"]=-1;
     map<int, int> v;
     v[valeur0] ++;v[valeur1] ++;v[valeur2] ++;v[valeur3] ++;v[valeur4] ++;
+    m_race=race;
+    
     bool test1 =false; 
     while(!test1)
     {
@@ -74,7 +85,7 @@ Personnage::Personnage()
         map<int, int>::iterator it = v.begin();
         while(it!= v.end())
         {
-            cout << it->first << ": " << it->second << " ";
+            cout << it->first << "(" << it->second << ") ";
             it++;
         }
         cout << endl;
@@ -82,11 +93,30 @@ Personnage::Personnage()
         cout << "A quelle statistique voulez vous attribuer une valeur?"<< endl;
         string a;
         cin >> a; 
+        while(!m_stats[a])
+        {
+            cout << "ce n'est pas une stat valide!" << endl;
+            m_stats.erase(a);
+            cin >> a;
+        }
         cout << "Quelle valeur voulez vous donner a cette statistique?"<< endl;
         int b;
         cin >> b;
+        while(!v[b])
+        {
+            cout << "ce n'est pas une valeur disponible!" << endl;
+            v.erase(b);
+            cin >> b;
+        }
         if(v[b]>=0 && m_stats[a]) 
         {
+            if(m_stats[a]>0)
+            {
+                v[m_stats[a]]++;
+                m_stats[a] = b;
+                v[b]--;
+            }
+            else{
             m_stats[a]=b;
             switch(v[b])
             {
@@ -95,13 +125,14 @@ Personnage::Personnage()
                 default:
                 v[b]--;
             }
-        }
+        }}
         if(v[valeur0] +v[valeur1] +v[valeur2] + v[valeur3] +v[valeur4]<=0)test1=true;
         
     }
+    ModifRace(m_race);
     afficheStats();
     //construire un menu pour déterminer quelle valeur va dans quel stat, peut être une fonction d'affichage de stat?
-    ModifRace(m_race);
+    
     
     cout << "Votre age:"<< endl;
     cin >> age;
@@ -151,17 +182,29 @@ string Personnage::getRace()
 void Personnage::ModifRace(string race)
 {
     
-    if(race == "elfe")
-    {
-        m_stats["CON"] ++;
-        m_stats["VIT"] +=3 ;
-        m_stats["INT"] --;
-    }
-    else if(race == "orc") cout << "orc" << endl;
-    else if(race == "humain") cout << "humain"<<endl;
+        if(race == "elfe")
+        {
+            m_stats["CON"] ++;
+            m_stats["VIT"] +=3 ;
+            m_stats["INT"] --;
+        }
+        else if(race == "orc") 
+        {
+            m_stats["CHA"] -=5;
+            m_stats["CON"] +=2;
+            m_stats["AGI"] +=2;
+            m_stats["VIT"] +=2;
 
-   
+        }
+        else if(race == "humain") 
+        {
+            m_stats["AGI"] +=2;
+            m_stats["CHA"] +=2;
+            m_stats["CON"] -=2;
+        }
+    
 }
+
 int Personnage::ValeurStat(string stat)
 {
     int i = m_stats[stat];

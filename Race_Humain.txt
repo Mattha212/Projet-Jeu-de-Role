@@ -1,1 +1,7 @@
 Les humains sont des creatures resilientes, pleines de ressources et surtout motivees.
+
+Bonus:
+AGI +2;
+CHA +2;
+Malus:
+CON -2;

@@ -1,1 +1,8 @@
-Les elfes sont doues avec la magie, gracieux et discret
+Les elfes sont doues avec la magie, gracieux et discret.
+
+Bonus: 
+CON: +1;
+VIT: +3
+
+Malus:
+INT: -1
