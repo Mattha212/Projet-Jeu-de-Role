@@ -1,7 +1,5 @@
 #include "Creation.hpp"
-#include "Setup.hpp"
 using namespace std;
-
 
 void lire(string s)
 {
@@ -17,34 +15,49 @@ void lire(string s)
         flux.close();
     }
 }
-Setup::Setup()
+
+void Save(Personnage p, string fichier)
 {
-
-    lire("Introduction");
-    lire("Creation_perso");
-    Personnage pj = Personnage();
+    ofstream MyExcelFile;
+    MyExcelFile.open("C:/Users/wyzma/Documents/VSCODE/C++/Test_JDR/"+ fichier, fstream::app);
+    MyExcelFile << p.getNom() + ";" ;
+    cout << p.getNom() << endl;
+    MyExcelFile << p.getAge() << " ans;";
+    cout << p.getAge() << endl;
+    MyExcelFile << p.getRace() + ";";
+    cout << p.getRace() << endl;
+    map<string, int>::iterator j = p.getStats().begin();
+    while(j!=p.getStats().end())
+    {
+        MyExcelFile << j->second << ";" ;
+        fflush(stdin);
+        j++;
+    }
+    MyExcelFile << p.getVie() << ";";
+    MyExcelFile << "\n";
+    MyExcelFile.close();
 }
-
 /**
  * It creates a character and saves it in a csv file.
  */
 Personnage::Personnage()
 {
+    fflush(stdin);
     srand((unsigned) time(NULL));
     Inventaire inv = Inventaire();
-    string nom; int age; string race;
+    string nom; int age; string race;int bouton;int compteur =0;
     m_inventaire = inv;
     cout << "Qui etes vous?" << endl;
     cout << "Votre nom: "<< endl;
     getline(cin,nom) ;
     fflush(stdin);
     m_nom=nom;
-    int bouton;
     const string s =  "1 : Precisions sur les humains 2 : Precisions sur les elfes 3: Precisions sur les orcs 0 : Entrer votre race";
-    cout << s << endl;
+    
     vector<string> tab = {"elfe", "orc","humain"};
     while(race.empty())
     {
+        if(compteur%2==0 || compteur ==0)cout<<s<<endl;
         cin >> bouton;
         switch(bouton)
         {
@@ -60,15 +73,28 @@ Personnage::Personnage()
             case 0:
             cout << "Votre race:"<< endl;
             cin >> race;
+
+            for(int i=0; i<(int)race.size();i++)
+            {
+                 if(race[i]<=90) race[i]+=32;
+            }
+
             while(count(tab.begin(),tab.end(),race)<1)
             {
                 cout << "Ce n'est pas une race disponible!" << endl;
                 cin >> race;
+                for(int i=0; i<(int)race.size();i++)
+                {
+                    if(race[i]<=90) race[i]+=32;
+                }
+
             }
             break;
             default:
             cout << "Ce n est pas un choix possible"<< endl;
         }
+        
+        compteur++;
     }
     fflush(stdin);
     int valeur0 = rand()%20+1;int valeur1 = rand()%20+1;
@@ -77,11 +103,9 @@ Personnage::Personnage()
     map<int, int> v;
     v[valeur0] ++;v[valeur1] ++;v[valeur2] ++;v[valeur3] ++;v[valeur4] ++;
     m_race=race;
-    
     bool test1 =false; 
     while(!test1)
-    {
-        
+    {    
         map<int, int>::iterator it = v.begin();
         while(it!= v.end())
         {
@@ -92,17 +116,29 @@ Personnage::Personnage()
         afficheStats();
         cout << "A quelle statistique voulez vous attribuer une valeur?"<< endl;
         string a;
-        cin >> a; 
-        while(!m_stats[a])
+        cin >> a;
+        for(int i=0; i<(int)a.size();i++)
+        {
+            if(a[i]>=97) a[i]-=32;
+        }
+       
+       while(m_stats[a]==0)
         {
             cout << "ce n'est pas une stat valide!" << endl;
             m_stats.erase(a);
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "A quelle statistique voulez vous attribuer une valeur?"<< endl;
             cin >> a;
+            for(int i=0; i<(int)a.size();i++)
+            {
+                if(a[i]>=97) a[i]-=32;
+            }
         }
+        
         cout << "Quelle valeur voulez vous donner a cette statistique?"<< endl;
         int b;
-        while(!(cin>>b) || b > 20)
+        while(!(cin>>b) || b > 20 || v[b]==0)
         {
             v.erase(b);
             cin.clear();
@@ -110,7 +146,7 @@ Personnage::Personnage()
             cout << "ce n'est pas une valeur disponible!" << endl;
             cout << "Quelle valeur voulez vous donner a la statistique " + a + " ?"<< endl;
         }
-        if(v[b]>=0 && m_stats[a]) 
+        if(m_stats[a]) 
         {
             if(m_stats[a]>0)
             {
@@ -143,22 +179,17 @@ Personnage::Personnage()
     m_inventaire.setPoidsMax(m_stats["CON"]*15);
     
     m_vie = m_stats["CON"]*50;
-    ofstream MyExcelFile;
-    MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app);
-    MyExcelFile << "\n" + getNom() + ";" ;
-    MyExcelFile << getAge() << " ans;";
-    MyExcelFile <<  getRace() + ";";
-    map<string, int>::iterator j = m_stats.begin();
-    while(j!=m_stats.end())
-    {
-        MyExcelFile << j->second << ";" ;
-        fflush(stdin);
-        j++;
-    }
-    MyExcelFile << m_vie << ";";
-    MyExcelFile << "\n";
-    MyExcelFile.close();
+}
 
+
+
+map<string, int> Personnage::getStats()
+{
+    return m_stats;
+}
+int Personnage::getVie()
+{
+    return m_vie;
 }
 int Personnage::getAge()
 {

@@ -15,6 +15,8 @@ class Personnage
         std::string getNom();
         void ModifRace(std::string race);
         int getAge();
+        int getVie();
+        std::map<std::string, int> getStats();
         std::string getRace();
         int ValeurStat(std::string stat);
         void afficheStats();
