@@ -4,7 +4,7 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-    cout << "Ceci est un menu. Choisissez ce que vous voulez faire."<< endl;
+    cout << "Ceci est un menu. Choisissez ce que vous voulez faire: 0: demarrer une nouvelle partie"<< endl;
     bool depart = false;
     while(!depart)
     {
@@ -15,9 +15,12 @@ int main(int argc, char* argv[])
             lire("Introduction");
             lire("Creation_perso");
             Personnage pj = Personnage();
-            pj.afficheStats();
+            pj.CreerPersonnage();
+            SavePerso(pj);
+            depart = true;
             break;
         }        
+
     }
     
 return 0;

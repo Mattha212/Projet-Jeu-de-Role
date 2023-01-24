@@ -1,4 +1,4 @@
-#include "Creation.hpp"
+#include "Personnage.hpp"
 using namespace std;
 
 void lire(string s)
@@ -16,31 +16,39 @@ void lire(string s)
     }
 }
 
-void Save(Personnage p, string fichier)
+void SavePerso(Personnage p)
 {
-    ofstream MyExcelFile;
-    MyExcelFile.open("C:/Users/wyzma/Documents/VSCODE/C++/Test_JDR/"+ fichier, fstream::app);
+    ofstream MyExcelFile ;
+    MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app);
+    MyExcelFile << "\n";
     MyExcelFile << p.getNom() + ";" ;
-    cout << p.getNom() << endl;
     MyExcelFile << p.getAge() << " ans;";
-    cout << p.getAge() << endl;
     MyExcelFile << p.getRace() + ";";
-    cout << p.getRace() << endl;
-    map<string, int>::iterator j = p.getStats().begin();
-    while(j!=p.getStats().end())
+    fflush(stdin);
+     map<string, int>::iterator it = p.m_stats.begin();
+
+    while(it != p.m_stats.end())
     {
-        MyExcelFile << j->second << ";" ;
-        fflush(stdin);
-        j++;
-    }
+    MyExcelFile << it->first << ": " << p.ValeurStat(it->first) << ";";
+    it++;
+    } 
     MyExcelFile << p.getVie() << ";";
     MyExcelFile << "\n";
+
     MyExcelFile.close();
+}
+
+Personnage ChargerPerso(string nom)
+{
+    Personnage p = Personnage();
+    ifstream MyExcelFile ;
+    MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app); 
+    
 }
 /**
  * It creates a character and saves it in a csv file.
  */
-Personnage::Personnage()
+void Personnage::CreerPersonnage()
 {
     fflush(stdin);
     srand((unsigned) time(NULL));
@@ -181,8 +189,25 @@ Personnage::Personnage()
     m_vie = m_stats["CON"]*50;
 }
 
-
-
+Personnage::Personnage()
+{
+    m_nom= "rien";
+    m_age= 0;
+    m_race = "rien";
+}
+Personnage::Personnage(std::string nom, int age ,std::string race, std::map<std::string, int> stats, Inventaire stuff)
+{
+        m_nom = nom;
+        m_age = age;
+        m_race = race;
+        m_vie = stats["CON"]*50;
+        m_stats["AGI"]=stats["AGI"]; m_stats["CON"]=stats["CON"]; m_stats["INT"]=stats["INT"]; m_stats["VIT"]=stats["VIT"]; m_stats["CHA"]=stats["CHA"];
+        map<string, Objet>::iterator it = stuff.getMap().begin();
+        while(it!=stuff.getMap().end())
+        {
+            m_inventaire.addObjet(it->second);
+        }
+}
 map<string, int> Personnage::getStats()
 {
     return m_stats;
@@ -249,10 +274,10 @@ void Personnage::afficheStats()
 
  while(it != m_stats.end())
  {
-    cout << it->first << ": " << ValeurStat(it->first) << " ";
+    cout << it->first << ": " << ValeurStat(it->first) << ";";
     it++;
  }   
- cout << endl;
+cout << "\n";
 }
 void Personnage::recupererObjet(Objet obj)
 {
