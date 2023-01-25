@@ -29,7 +29,7 @@ void SavePerso(Personnage p)
 
     while(it != p.m_stats.end())
     {
-    MyExcelFile << it->first << ": " << p.ValeurStat(it->first) << ";";
+    MyExcelFile << p.ValeurStat(it->first) << ";";
     it++;
     } 
     MyExcelFile << p.getVie() << ";";
@@ -43,8 +43,39 @@ Personnage ChargerPerso(string nom)
     Personnage p = Personnage();
     ifstream MyExcelFile ;
     MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app); 
+    vector<vector<string>> content;
+    vector<string> row;
+    string line, word;
+ 
+    while(getline(MyExcelFile, line))
+    {
+    row.clear();
     
+    stringstream str(line);
+    getline(str, word, ';');
+    if(word==nom)
+    {
+        while(getline(str, word, ';')){
+            //getline(str, word, ';');
+            row.push_back(word);
+            content.push_back(row);
+        }
+    }
+
+    }
+
+    //Personnage pj = Personnage(nom,);
+    
+    for(int i=0;i<(int)content.size();i++)
+    {
+    for(int j=0;j<(int)content[i].size();j++)
+    {
+    cout<<content[i][j]<<" ";
+    }
+    cout<<"\n";
+    }
 }
+
 /**
  * It creates a character and saves it in a csv file.
  */

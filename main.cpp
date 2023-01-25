@@ -12,11 +12,11 @@ int main(int argc, char* argv[])
         switch(choix)
         {
             case 0: 
-            lire("Introduction");
-            lire("Creation_perso");
-            Personnage pj = Personnage();
-            pj.CreerPersonnage();
-            SavePerso(pj);
+            /*lire("Introduction");
+            lire("Creation_perso");*/
+            string word;
+            cin >> word;
+            ChargerPerso(word);
             depart = true;
             break;
         }        

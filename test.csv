@@ -1,4 +1,6 @@
-Nom;Age;Race;INT;AGI;VIT;CHA;CON;HP;
+Nom;Age;Race;AGI;CHA;CON;INT;VIT;HP;
 
 
-o;45 ans;orc;AGI: 3;CHA: -2;CON: 10;INT: 11;VIT: 17;500;
+o;45;orc;3;-2;10;11;17;500;
+
+l;56; humain;5;6;4;12;14;300;
