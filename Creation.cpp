@@ -16,6 +16,15 @@ void lire(string s)
     }
 }
 
+int PairCountFelement(vector<pair<string, int>> v,string a)
+{
+    int nb =0;
+    for(int i=0;i<v.size();i++)
+    {   
+        if(v.at(i).first==a)nb++; 
+    }
+    return nb;
+}
 void SavePerso(Personnage p)
 {
     ofstream MyExcelFile ;
@@ -25,12 +34,10 @@ void SavePerso(Personnage p)
     MyExcelFile << p.getAge() << " ans;";
     MyExcelFile << p.getRace() + ";";
     fflush(stdin);
-     map<string, int>::iterator it = p.m_stats.begin();
 
-    while(it != p.m_stats.end())
+    for(int it=0;it<p.getStats().size();it++)
     {
-    MyExcelFile << p.ValeurStat(it->first) << ";";
-    it++;
+    MyExcelFile << p.ValeurStat(p.getStats()[it].first) << ";";
     } 
     MyExcelFile << p.getVie() << ";";
     MyExcelFile << "\n";
@@ -40,40 +47,40 @@ void SavePerso(Personnage p)
 
 Personnage ChargerPerso(string nom)
 {
-    Personnage p = Personnage();
     ifstream MyExcelFile ;
     MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app); 
-    vector<vector<string>> content;
-    vector<string> row;
-    string line, word;
- 
-    while(getline(MyExcelFile, line))
+    string line, word; int i =1;string  race; int age; vector<pair<string, int>> stat(5);
+    bool test = false;
+    while(getline(MyExcelFile, line)  && !test)
     {
-    row.clear();
-    
-    stringstream str(line);
+    stringstream str(line), ss;
     getline(str, word, ';');
     if(word==nom)
     {
-        while(getline(str, word, ';')){
-            //getline(str, word, ';');
-            row.push_back(word);
-            content.push_back(row);
+        while(getline(str, word, ';') && i<8)
+        {
+            switch(i)
+            {
+                case 1:age = stoi(word);
+                break;
+                case 2:race = word;
+                break;
+                case 3:stat.at(0)=make_pair("AGI",stoi(word));break;
+                case 4:stat.at(1)=make_pair("CHA",stoi(word));break;
+                case 5:stat.at(2)=make_pair("CON",stoi(word));break;
+                case 6:stat.at(3)=make_pair("INT",stoi(word));break;
+                case 7:stat.at(4)=make_pair("VIT",stoi(word));test=true;break;
+            }         
+            i++;   
         }
     }
-
     }
-
-    //Personnage pj = Personnage(nom,);
-    
-    for(int i=0;i<(int)content.size();i++)
-    {
-    for(int j=0;j<(int)content[i].size();j++)
-    {
-    cout<<content[i][j]<<" ";
-    }
-    cout<<"\n";
-    }
+    Inventaire inv  = Inventaire(stat.at(2).second);
+    inv.afficherInventaire();
+    //inv.addObjet(ob);
+    Personnage p = Personnage(nom,age,race,stat,inv);
+    p.afficheStats();
+    return p;
 }
 
 /**
@@ -83,6 +90,9 @@ void Personnage::CreerPersonnage()
 {
     fflush(stdin);
     srand((unsigned) time(NULL));
+    vector<pair<string,int>> v1(5);
+    m_stats =v1;
+    m_stats[0].first="AGI";m_stats[1].first="CHA";m_stats[2].first="CON";m_stats[3].first="INT";m_stats[4].first="VIT";
     Inventaire inv = Inventaire();
     string nom; int age; string race;int bouton;int compteur =0;
     m_inventaire = inv;
@@ -138,7 +148,7 @@ void Personnage::CreerPersonnage()
     fflush(stdin);
     int valeur0 = rand()%20+1;int valeur1 = rand()%20+1;
     int valeur2 = rand()%20+1;int valeur3 = rand()%20+1;int valeur4 = rand()%20+1;
-    m_stats["AGI"]=m_stats["INT"]=m_stats["VIT"]=m_stats["CHA"]=m_stats["CON"]=-1;
+    m_stats.at(0).second =m_stats.at(1).second=m_stats.at(2).second=m_stats.at(3).second=m_stats.at(4).second=-1;
     map<int, int> v;
     v[valeur0] ++;v[valeur1] ++;v[valeur2] ++;v[valeur3] ++;v[valeur4] ++;
     m_race=race;
@@ -161,10 +171,9 @@ void Personnage::CreerPersonnage()
             if(a[i]>=97) a[i]-=32;
         }
        
-       while(m_stats[a]==0)
+       while(PairCountFelement(m_stats,a)==0)
         {
             cout << "ce n'est pas une stat valide!" << endl;
-            m_stats.erase(a);
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "A quelle statistique voulez vous attribuer une valeur?"<< endl;
@@ -185,16 +194,25 @@ void Personnage::CreerPersonnage()
             cout << "ce n'est pas une valeur disponible!" << endl;
             cout << "Quelle valeur voulez vous donner a la statistique " + a + " ?"<< endl;
         }
-        if(m_stats[a]) 
+        if(PairCountFelement(m_stats,a)>0) 
         {
-            if(m_stats[a]>0)
+            int its = 0;
+            for(int i=0;i<5;i++)
             {
-                v[m_stats[a]]++;
-                m_stats[a] = b;
+                if(m_stats.at(i).first == a)
+                {
+                    its = i;
+                }
+            }
+            
+            if(m_stats.at(its).second>0)
+            {
+                v[m_stats.at(its).second]++;
+                m_stats.at(its).second = b;
                 v[b]--;
             }
             else{
-                m_stats[a]=b;
+                m_stats.at(its).second=b;
                 switch(v[b])
                 {
                     case 0:
@@ -214,10 +232,8 @@ void Personnage::CreerPersonnage()
     cin >> age;
     fflush(stdin);
     m_age=age;
-    
-    m_inventaire.setPoidsMax(m_stats["CON"]*15);
-    
-    m_vie = m_stats["CON"]*50;
+    m_inventaire.setPoidsMax((m_stats.at(2).second)*15);
+    m_vie = (m_stats.at(2).second)*50;
 }
 
 Personnage::Personnage()
@@ -226,20 +242,26 @@ Personnage::Personnage()
     m_age= 0;
     m_race = "rien";
 }
-Personnage::Personnage(std::string nom, int age ,std::string race, std::map<std::string, int> stats, Inventaire stuff)
+Personnage::Personnage(string nom, int age ,string race, vector<pair<string, int>> stats, Inventaire stuff)
 {
+        vector<pair<string, int>> v1(5);
+        m_stats = v1;
         m_nom = nom;
         m_age = age;
         m_race = race;
-        m_vie = stats["CON"]*50;
-        m_stats["AGI"]=stats["AGI"]; m_stats["CON"]=stats["CON"]; m_stats["INT"]=stats["INT"]; m_stats["VIT"]=stats["VIT"]; m_stats["CHA"]=stats["CHA"];
+        m_vie = (stats.at(2).second)*50;
+        m_stats.at(0)=stats.at(0); m_stats.at(2)=stats.at(2); m_stats.at(3)=stats.at(3); m_stats.at(4)=stats.at(4); m_stats.at(1)=stats.at(1);
+        if(stuff.getPoidsTotal()>0)
+        {
         map<string, Objet>::iterator it = stuff.getMap().begin();
         while(it!=stuff.getMap().end())
         {
             m_inventaire.addObjet(it->second);
         }
+        }
+        else m_inventaire = Inventaire();
 }
-map<string, int> Personnage::getStats()
+vector<pair<string,int>> Personnage::getStats()
 {
     return m_stats;
 }
@@ -272,42 +294,46 @@ void Personnage::ModifRace(string race)
     
         if(race == "elfe")
         {
-            m_stats["CON"] ++;
-            m_stats["VIT"] +=3 ;
-            m_stats["INT"] --;
+            m_stats.at(2).second ++; //CON
+            m_stats.at(4).second +=3 ; //VIT
+            m_stats.at(3).second --; //INT
         }
         else if(race == "orc") 
         {
-            m_stats["CHA"] -=5;
-            m_stats["CON"] +=2;
-            m_stats["AGI"] +=2;
-            m_stats["VIT"] +=2;
+            m_stats.at(1).second -=5; //CHA
+            m_stats.at(2).second +=2; //CON
+            m_stats.at(0).second +=2; //AGI
+            m_stats.at(4).second +=2; //VIT
 
         }
         else if(race == "humain") 
         {
-            m_stats["AGI"] +=2;
-            m_stats["CHA"] +=2;
-            m_stats["CON"] -=2;
+            m_stats.at(0).second +=2; //AGI
+            m_stats.at(1).second +=2; //CHA
+            m_stats.at(2).second -=2; //CON
         }
     
 }
 
 int Personnage::ValeurStat(string stat)
 {
-    int i = m_stats[stat];
-    return i;
+
+    for(int j=0; j<5; j++)
+    {
+        if(m_stats.at(j).first==stat)
+        {
+            return m_stats.at(j).second;
+        }
+    }
+
 } 
 
 void Personnage::afficheStats()
 {
- map<string, int>::iterator it = m_stats.begin();
-
- while(it != m_stats.end())
- {
-    cout << it->first << ": " << ValeurStat(it->first) << ";";
-    it++;
- }   
+for(int i=0;i<m_stats.size();i++) 
+{
+    cout << m_stats[i].first << ": " << ValeurStat(m_stats[i].first) << ";";
+}   
 cout << "\n";
 }
 void Personnage::recupererObjet(Objet obj)
@@ -323,11 +349,18 @@ Inventaire Personnage::getInventaire()
     return m_inventaire;
 }
 
-
 Inventaire::Inventaire()
 {
 map <string, Objet> m_inventaire;
 m_poidsmax = 0;
+m_poidsTotal=0;
+}
+
+
+Inventaire::Inventaire(int force)
+{
+map <string, Objet> m_inventaire;
+m_poidsmax = force *10;
 m_poidsTotal=0;
 }
 Objet Inventaire::getObjet(string nom)
@@ -392,6 +425,10 @@ void Inventaire::setPoidsMax(int poids)
 int Inventaire::getPoidsMax()
 {
     return m_poidsmax;
+}
+int Inventaire::getPoidsTotal()
+{
+    return m_poidsTotal;
 }
 bool Inventaire::deja_present(Objet obj)
 {

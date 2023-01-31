@@ -1,7 +1,6 @@
 #include "Creation.cpp"
 using namespace std;
 
-
 int main(int argc, char* argv[])
 {
     cout << "Ceci est un menu. Choisissez ce que vous voulez faire: 0: demarrer une nouvelle partie"<< endl;
@@ -14,9 +13,6 @@ int main(int argc, char* argv[])
             case 0: 
             /*lire("Introduction");
             lire("Creation_perso");*/
-            string word;
-            cin >> word;
-            ChargerPerso(word);
             depart = true;
             break;
         }        

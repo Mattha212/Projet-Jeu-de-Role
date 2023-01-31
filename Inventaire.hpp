@@ -12,6 +12,7 @@ private:
 
 public:
     Inventaire();
+    Inventaire(int force);
     Objet getObjet(std::string nom);
     std::map<std::string, Objet> getMap();
     void addObjet(Objet obj);
