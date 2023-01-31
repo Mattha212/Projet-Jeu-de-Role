@@ -19,4 +19,5 @@ public:
     void setPoids(int newpoids);
     int getNbElement();
     void setNbElement(int newNbElement);
+    ~Objet(){};
 };

@@ -1,5 +1,5 @@
 #include "Inventaire.hpp"
-
+#include "Stats.hpp"
 class Personnage
 {
     private:
