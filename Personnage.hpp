@@ -8,19 +8,17 @@ class Personnage
         std::string m_race;
         int m_vie;
         Inventaire m_inventaire;
-        std::vector<std::pair<std::string, int>> m_stats;        
+        Stats m_stats;      
     public:
         Personnage();
-        Personnage(std::string nom, int age ,std::string race, std::vector<std::pair<std::string, int>> stats, Inventaire stuff);
+        Personnage(std::string nom, int age ,std::string race, int stats[], Inventaire stuff);
         void CreerPersonnage();
         std::string getNom();
         void ModifRace(std::string race);
         int getAge();
         int getVie();
-        std::vector<std::pair<std::string, int>> getStats();
+        Stats getStats();
         std::string getRace();
-        int ValeurStat(std::string stat);
-        void afficheStats();
         void recupererObjet(Objet obj);
         void jeterObjet(Objet obj);
         Inventaire getInventaire();
