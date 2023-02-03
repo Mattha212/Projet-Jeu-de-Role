@@ -1,5 +1,5 @@
-#include "Armure.hpp"
-
+#include "Objet.hpp"
+#//include "Arme.hpp"
 
 class Inventaire
 {

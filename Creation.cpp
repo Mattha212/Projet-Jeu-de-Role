@@ -230,15 +230,16 @@ Personnage::Personnage(string nom, int age ,string race, int stats[],Inventaire 
         m_age = age;
         m_race = race;
         m_vie = (m_stats.getStatfromString("CON"))*50;
+        m_inventaire = Inventaire(m_stats.getStatfromString("CON"));
         if(stuff.getPoidsTotal()>0)
         {
         map<string, Objet>::iterator it = stuff.getMap().begin();
         while(it!=stuff.getMap().end())
         {
             m_inventaire.addObjet(it->second);
-        }
-        }
-        else m_inventaire = Inventaire();
+        }}
+        
+        
 }
 Stats Personnage::getStats()
 {
@@ -495,3 +496,60 @@ void Stats::SetStat(string a, int b)
         if(m_stats[i].first==a)  m_stats[i].second = b;
     }
 }
+
+Arme::Arme() : Objet(1, "tuyau nul")
+{
+    m_degats = 10;
+    m_materiau = "fer de merde";
+    m_equipee = false;
+}
+Arme::Arme(string nom, int poids, int degats, string materiau): Objet(poids, nom)
+{
+    m_degats= degats;
+    m_materiau = materiau;
+    m_equipee = false;
+}
+int Arme::getDegats()
+{
+    return m_degats;
+}
+string Arme::getMateriau()
+{
+    return m_materiau;
+}
+void Arme::equipe_OR_desequipe()
+{
+    m_equipee = !m_equipee;
+}
+
+
+
+
+Armure::Armure(): Objet(1, "vieux tissu")
+{
+    m_materiau = "tissu de merde";
+    m_protection = 5;
+    m_equipee = false;
+}
+Armure::Armure(string nom, int poids, int protection, string materiau): Objet(poids, nom)
+{
+    m_materiau= materiau;
+    m_protection = protection;
+    m_equipee = false;
+}
+int Armure::getProtection()
+{
+    return m_protection;
+}
+string Armure::getMateriau()
+{
+    return m_materiau;
+}
+void Armure::equipe_OR_desequipe()
+{
+    m_equipee = !m_equipee;
+}
+
+
+
+
