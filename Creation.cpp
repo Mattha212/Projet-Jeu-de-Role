@@ -44,6 +44,7 @@ void SavePerso(Personnage p)
     MyExcelFile.close();
 }
 
+
 Personnage ChargerPerso(string nom)
 {
     ifstream MyExcelFile ;
@@ -83,7 +84,7 @@ void Personnage::CreerPersonnage()
 {
     m_stats = Stats();
     fflush(stdin);
-    srand((unsigned) time(NULL));
+    
     Inventaire inv = Inventaire();
     string nom; int age; string race;int bouton;int compteur =0;
     m_inventaire = inv;
@@ -294,7 +295,15 @@ void Personnage::jeterObjet(Objet obj)
 {
     m_inventaire.throwObjet(obj.getNom());
 }
+void Personnage::Attaquer(Personnage cible)
+{
+     int valeur0 = rand()%20+1; int valeur1 = rand()%20+1;
+     if(getStats().getStatfromString("AGI")-valeur0>cible.getStats().getStatfromString("AGI")-valeur1)
+     {
+        cible.PrendreDegats(10);
+     }
 
+}
 
 Inventaire Personnage::getInventaire()
 {
@@ -395,11 +404,12 @@ Objet::Objet()
     m_nom= "dechet";
     m_nb_element = 1;
 }
-Objet::Objet(int poids, string nom) 
+Objet::Objet(int poids, string nom, int type) 
 {
     m_poids = poids;
     m_nom = nom;
     m_nb_element = 1;
+    m_type = type;
 }
 int Objet::getPoids()
 {
@@ -426,6 +436,10 @@ void Objet::setNbElement(int newNbElement)
     int p = getPoids()/m_nb_element;
     m_nb_element = newNbElement;
     setPoids(p*newNbElement);
+}
+int Objet::getType()
+{
+    return m_type;
 }
 
 
@@ -497,13 +511,14 @@ void Stats::SetStat(string a, int b)
     }
 }
 
-Arme::Arme() : Objet(1, "tuyau nul")
+
+Arme::Arme() : Objet(1, "tuyau nul", 0)
 {
     m_degats = 10;
     m_materiau = "fer de merde";
     m_equipee = false;
 }
-Arme::Arme(string nom, int poids, int degats, string materiau): Objet(poids, nom)
+Arme::Arme(string nom, int poids, int degats, string materiau): Objet(poids, nom, 0)
 {
     m_degats= degats;
     m_materiau = materiau;
@@ -523,15 +538,13 @@ void Arme::equipe_OR_desequipe()
 }
 
 
-
-
-Armure::Armure(): Objet(1, "vieux tissu")
+Armure::Armure(): Objet(1, "vieux tissu", 1)
 {
     m_materiau = "tissu de merde";
     m_protection = 5;
     m_equipee = false;
 }
-Armure::Armure(string nom, int poids, int protection, string materiau): Objet(poids, nom)
+Armure::Armure(string nom, int poids, int protection, string materiau): Objet(poids, nom, 1)
 {
     m_materiau= materiau;
     m_protection = protection;

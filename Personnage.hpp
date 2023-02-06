@@ -22,9 +22,9 @@ class Personnage
         void recupererObjet(Objet obj);
         void jeterObjet(Objet obj);
         Inventaire getInventaire();
+        void Attaquer(Personnage cible);
+        void PrendreDegats(int degats);
         ~Personnage(){};
-
-
 };
 
 
