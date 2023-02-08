@@ -1,4 +1,6 @@
 #include "Personnage.hpp"
+#include <bits/stdc++.h>
+
 using namespace std;
 
 void lire(string s)
@@ -43,7 +45,54 @@ void SavePerso(Personnage p)
 
     MyExcelFile.close();
 }
-
+bool PersoMort(Personnage p)
+{
+    if(p.getVie()<=0) return true;
+    else return false;
+}
+void LancerCombat(vector<Personnage> tab)
+{
+    bool Unmort = false;
+    while(!Unmort)
+    {
+        if(tab.at(0).getStats().getStatfromString("VIT") >= tab.at(1).getStats().getStatfromString("VIT"))
+        {
+            tab[1] = tab.at(0).Attaquer(tab.at(1));
+            Unmort = PersoMort(tab.at(1));
+            if(Unmort)
+            {
+                cout << tab.at(0).getNom() << " a gagné!"<< endl;
+            }
+            else
+            {
+                tab[0]= tab.at(1).Attaquer(tab.at(0));
+                Unmort = PersoMort(tab.at(0));
+                if(Unmort)
+                {
+                    cout << tab.at(1).getNom() << " a gagné!"<< endl;
+                }
+            } 
+        }
+        else
+        {
+            tab[0] =tab[1].Attaquer(tab[0]);
+            Unmort = PersoMort(tab[0]);
+            if(Unmort)
+            {
+                cout << tab[1].getNom() << " a gagné!"<< endl;
+            }
+            else
+            {
+                tab[1]= tab[0].Attaquer(tab[1]);
+                Unmort = PersoMort(tab[1]);
+                if(Unmort)
+                {
+                    cout << tab[0].getNom() << " a gagné!"<< endl;
+                }
+            }
+        }
+    } 
+}
 
 Personnage ChargerPerso(string nom)
 {
@@ -295,14 +344,26 @@ void Personnage::jeterObjet(Objet obj)
 {
     m_inventaire.throwObjet(obj.getNom());
 }
-void Personnage::Attaquer(Personnage cible)
+Personnage Personnage::Attaquer(Personnage cible)
 {
      int valeur0 = rand()%20+1; int valeur1 = rand()%20+1;
      if(getStats().getStatfromString("AGI")-valeur0>cible.getStats().getStatfromString("AGI")-valeur1)
      {
-        cible.PrendreDegats(10);
+        cout << this->getNom() << " attaque violemment " << cible.getNom() << " !" << endl;
+        cible.PrendreDegats(100);
      }
+     else cout << this->getNom() << " rate magnifiquement " << cible.getNom() << "..." << endl;
+    return cible;
+}
+void Personnage::PrendreDegats(int degats)
+{
+    setVie(getVie()-degats);
+    cout << "Il reste à " << getNom() << " " <<getVie()<< " pvs" << endl;
+}
 
+void Personnage::setVie(int v)
+{
+    m_vie= v;
 }
 
 Inventaire Personnage::getInventaire()

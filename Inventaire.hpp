@@ -1,4 +1,6 @@
 #include "Objet.hpp"
+#include <bits/stdc++.h>
+
 #//include "Arme.hpp"
 
 class Inventaire

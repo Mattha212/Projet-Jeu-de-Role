@@ -1,5 +1,7 @@
 #include "Inventaire.hpp"
 #include "Stats.hpp"
+#include <bits/stdc++.h>
+
 class Personnage
 {
     private:
@@ -17,12 +19,13 @@ class Personnage
         void ModifRace(std::string race);
         int getAge();
         int getVie();
+        void setVie(int v);
         Stats getStats();
         std::string getRace();
         void recupererObjet(Objet obj);
         void jeterObjet(Objet obj);
         Inventaire getInventaire();
-        void Attaquer(Personnage cible);
+        Personnage Attaquer(Personnage cible);
         void PrendreDegats(int degats);
         ~Personnage(){};
 };
