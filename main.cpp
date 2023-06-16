@@ -1,46 +1,95 @@
 #include "Creation.cpp"
-using namespace std;
 #include <bits/stdc++.h>
+using namespace std;
+
+bool LePlusRapide(Personnage p1, Personnage p2){
+    return p1.getStats().getStatfromString("VIT")>p2.getStats().getStatfromString("VIT");
+}
+
+Personnage ChargerPerso(string nom)
+{
+    ifstream MyExcelFile ;
+    MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app); 
+    string line, word; int i =1;string  race; int age; int stat[5];int vie =0;
+    bool test = false;
+    while(getline(MyExcelFile, line)  && !test)
+    {
+    stringstream str(line), ss;
+    getline(str, word, ';');
+    if(word==nom)
+    {
+        while(getline(str, word, ';') && i<9)
+        {
+            switch(i)
+            {
+                case 1:age = stoi(word);
+                break;
+                case 2:race = word;
+                break;
+                case 3:stat[0]=stoi(word);break;
+                case 4:stat[1]=stoi(word);break;
+                case 5:stat[2]=stoi(word);break;
+                case 6:stat[3]=stoi(word);break;
+                case 7:stat[4]=stoi(word);break;
+                case 8:vie = stoi(word); test=true; break;
+            }         
+            i++;
+        }
+    }
+    }
+    Inventaire inv  = Inventaire(stat[2]);
+    Personnage p = Personnage(nom,age,race,stat,inv);
+    if(p.getVie()!=vie)p.setVie(vie);
+    return p;
+}
+
+void RoundDeCombat(vector<Personnage> &pjs){
+    sort(pjs.begin(), pjs.end(), LePlusRapide);
+    cout << pjs.at(0).getVie() << " " << pjs.at(1).getVie() << endl;
+    for(auto &it :pjs){
+        cout << "c'est le tour de " << it.getNom() << ", que va-t-il faire?" << endl;
+        cout << "1: se soigner, 2: attaquer quelqu'un" << endl;
+        int action;
+        cin >> action ;
+        switch(action){
+            case 1:
+            //utiliser un sort de soin (faut gérer la mana et les sorts)
+            case 2:{
+            int i =0;
+            for(vector<Personnage>::iterator it1=pjs.begin(); it1 !=pjs.end();it1++ ){
+                 cout << i << ": " << (*it1).getNom() << " " ; i++;}
+                 cout << endl;
+            cout << "qui attaquer? Donnez le numero du personnage" << endl;
+            int cible;
+            cin >> cible;
+            it.Attaquer(pjs.at(cible));
+            break;
+            }
+            default:
+            cout << "ce n'est pas un choix encore possible!" << endl;
+            break;
+        }
+    }
+    //return pjs;
+};
+
 
 int main(int argc, char* argv[])
 {
     srand((unsigned) time(NULL));
-    /*cout << "Ceci est un menu. Choisissez ce que vous voulez faire: 0: demarrer une nouvelle partie"<< endl;
-    bool depart = false;
-    while(!depart)
-    {
-        int choix; cin >> choix;
-        switch(choix)
-        {
-            case 0: 
-            lire("Introduction");
-            lire("Creation_perso");
-            depart = true;
-            break;
-        }        
+    Personnage p1 = ChargerPerso("Jugad"); Personnage p2 = ChargerPerso("victime");
+    vector<Personnage> ps= {p1,p2};
 
+    while(ps.at(0).IsAlive() && ps.at(1).IsAlive()){
+    cout << ps.at(0).getVie() << " " << ps.at(1).getVie() << endl;
+    RoundDeCombat(ps);
+    cout << "fin du tour" << endl;
+    /*Personnage p1 = ps.at(0), p2 = ps.at(1);
+    ps = {p1, p2};*/
+    cout << ps.at(0).getVie() << " " << ps.at(1).getVie() << endl;
+    }
+    /*while(p2.IsAlive()){
+    p1.Attaquer(p2);
     }*/
-    Inventaire inv = Inventaire(16);
-    Inventaire inv2 = Inventaire(11);
-
-    int tab[5] = {10,15,16,17,11};
-    int tab2[5] = {20,17,11,14,20};
-
-    Personnage p = Personnage("k",16,"orc",tab,inv);
-    Personnage p2 = Personnage("l", 19,"humain", tab2, inv2);
-    //cout << p.getInventaire().getPoidsMax();
-    Arme a = Arme("Fleau de Dieu", 10,400,"Fer Celeste");
-    Arme a2 = Arme("Lance d'Odin", 100,300,"Cuivre Celeste");
-
-    p.recupererObjet(a);
-    Armure am = Armure();   
-    p.recupererObjet(am);
-    p2.recupererObjet(a2);
-    p2.recupererObjet(am);
-    vector<Personnage> vec;
-    vec.push_back(p); vec.push_back(p2);
-    int i =0;
-    LancerCombat(vec);
-
-return 0;
+    return 0;
 } 

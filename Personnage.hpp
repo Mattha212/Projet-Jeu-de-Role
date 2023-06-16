@@ -9,11 +9,12 @@ class Personnage
         int m_age;
         std::string m_race;
         int m_vie;
-        Inventaire m_inventaire;
+        Inventaire *m_inventaire;
         Stats m_stats;      
     public:
         Personnage();
-        Personnage(std::string nom, int age ,std::string race, int stats[], Inventaire stuff);
+        Personnage(Personnage const& PersoACopier);
+        Personnage(std::string name, int age, std::string race, int *stats, Inventaire stuff);
         void CreerPersonnage();
         std::string getNom();
         void ModifRace(std::string race);
@@ -21,13 +22,15 @@ class Personnage
         int getVie();
         void setVie(int v);
         Stats getStats();
+        bool IsAlive();
         std::string getRace();
         void recupererObjet(Objet obj);
         void jeterObjet(Objet obj);
         Inventaire getInventaire();
-        Personnage Attaquer(Personnage cible);
+        void Attaquer(Personnage &cible);
         void PrendreDegats(int degats);
-        ~Personnage(){};
+        void Sauvegarde();
+        ~Personnage(){delete m_inventaire;};
 };
 
 

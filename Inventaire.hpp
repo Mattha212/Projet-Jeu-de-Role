@@ -20,6 +20,8 @@ public:
     void addObjet(Objet obj);
     void throwObjet(std::string nom);
     void afficherInventaire();
+    void afficherArmes();
+    void afficherArmures();
     int getPoidsTotal();
     void setPoidsMax(int poids);
     int getPoidsMax();

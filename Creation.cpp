@@ -6,7 +6,7 @@ using namespace std;
 void lire(string s)
 {
     string s1 = s + ".txt";
-    ifstream flux(s1, ios::in);
+    fstream flux(s1, ios::in);
     if(flux)
     {
         string ligne;
@@ -26,25 +26,7 @@ int PairCountFelement(Stats v,string a)
     }
     return nb;
 }
-void SavePerso(Personnage p)
-{
-    ofstream MyExcelFile ;
-    MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app);
-    MyExcelFile << "\n";
-    MyExcelFile << p.getNom() + ";" ;
-    MyExcelFile << p.getAge() << " ans;";
-    MyExcelFile << p.getRace() + ";";
-    fflush(stdin);
 
-    for(int it=0;it<5;it++)
-    {
-    MyExcelFile << p.getStats().getStatfromIndex(it) <<";";
-    } 
-    MyExcelFile << p.getVie() << ";";
-    MyExcelFile << "\n";
-
-    MyExcelFile.close();
-}
 bool PersoMort(Personnage p)
 {
     if(p.getVie()<=0) return true;
@@ -57,7 +39,7 @@ void LancerCombat(vector<Personnage> tab)
     {
         if(tab.at(0).getStats().getStatfromString("VIT") >= tab.at(1).getStats().getStatfromString("VIT"))
         {
-            tab[1] = tab.at(0).Attaquer(tab.at(1));
+            tab.at(0).Attaquer(tab.at(1));
             Unmort = PersoMort(tab.at(1));
             if(Unmort)
             {
@@ -65,7 +47,7 @@ void LancerCombat(vector<Personnage> tab)
             }
             else
             {
-                tab[0]= tab.at(1).Attaquer(tab.at(0));
+                tab.at(1).Attaquer(tab.at(0));
                 Unmort = PersoMort(tab.at(0));
                 if(Unmort)
                 {
@@ -75,7 +57,7 @@ void LancerCombat(vector<Personnage> tab)
         }
         else
         {
-            tab[0] =tab[1].Attaquer(tab[0]);
+            tab[1].Attaquer(tab[0]);
             Unmort = PersoMort(tab[0]);
             if(Unmort)
             {
@@ -83,7 +65,7 @@ void LancerCombat(vector<Personnage> tab)
             }
             else
             {
-                tab[1]= tab[0].Attaquer(tab[1]);
+                tab[0].Attaquer(tab[1]);
                 Unmort = PersoMort(tab[1]);
                 if(Unmort)
                 {
@@ -94,49 +76,14 @@ void LancerCombat(vector<Personnage> tab)
     } 
 }
 
-Personnage ChargerPerso(string nom)
-{
-    ifstream MyExcelFile ;
-    MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app); 
-    string line, word; int i =1;string  race; int age; int stat[5];
-    bool test = false;
-    while(getline(MyExcelFile, line)  && !test)
-    {
-    stringstream str(line), ss;
-    getline(str, word, ';');
-    if(word==nom)
-    {
-        while(getline(str, word, ';') && i<8)
-        {
-            switch(i)
-            {
-                case 1:age = stoi(word);
-                break;
-                case 2:race = word;
-                break;
-                case 3:stat[0]=stoi(word);break;
-                case 4:stat[1]=stoi(word);break;
-                case 5:stat[2]=stoi(word);break;
-                case 6:stat[3]=stoi(word);break;
-                case 7:stat[4]=stoi(word);test=true;break;
-            }         
-            i++;
-        }
-    }
-    }
-    Inventaire inv  = Inventaire(stat[2]);
-    Stats s = Stats(stat, 5);
-    Personnage p = Personnage(nom,age,race,stat,inv);
-    return p;
-}
+
 void Personnage::CreerPersonnage()
 {
     m_stats = Stats();
     fflush(stdin);
     
-    Inventaire inv = Inventaire();
     string nom; int age; string race;int bouton;int compteur =0;
-    m_inventaire = inv;
+    m_inventaire = new Inventaire();
     cout << "Qui etes vous?" << endl;
     cout << "Votre nom: "<< endl;
     getline(cin,nom) ;
@@ -264,32 +211,48 @@ void Personnage::CreerPersonnage()
     cin >> age;
     fflush(stdin);
     m_age=age;
-    m_inventaire.setPoidsMax((m_stats.getStatfromString("CON"))*15);
+    m_inventaire->setPoidsMax((m_stats.getStatfromString("CON"))*15);
     m_vie = (m_stats.getStatfromString("CON"))*50;
+    
 }
 Personnage::Personnage()
 {
-    m_nom= "rien";
-    m_age= 0;
-    m_race = "rien";
+    CreerPersonnage();
+    Sauvegarde();
 }
-Personnage::Personnage(string nom, int age ,string race, int stats[],Inventaire stuff)
+Personnage::Personnage(string name, int age, string race, int *stats, Inventaire stuff){
+    m_nom= name; m_age = age; m_race = race;  m_stats= Stats(stats, 5); 
+        m_inventaire = new Inventaire(m_stats.getStatfromString("CON"));
+    if(stuff.getPoidsTotal()>0)
+    {
+    map<string, Objet>::iterator it = stuff.getMap().begin();
+    while(it!=stuff.getMap().end())
+    {
+        m_inventaire->addObjet(it->second);
+    }}
+}
+Personnage::Personnage(Personnage const& PersoACopier)
 {
-        m_stats = Stats(stats,5);
-        m_nom = nom;
-        m_age = age;
-        m_race = race;
-        m_vie = (m_stats.getStatfromString("CON"))*50;
-        m_inventaire = Inventaire(m_stats.getStatfromString("CON"));
-        if(stuff.getPoidsTotal()>0)
+        m_stats = PersoACopier.m_stats;
+        m_nom = PersoACopier.m_nom;
+        m_age = PersoACopier.m_age;
+        m_race = PersoACopier.m_race;
+        m_vie = PersoACopier.m_vie;
+        m_inventaire = new Inventaire(m_stats.getStatfromString("CON"));
+        if(PersoACopier.m_inventaire->getPoidsTotal()>0)
         {
-        map<string, Objet>::iterator it = stuff.getMap().begin();
-        while(it!=stuff.getMap().end())
+        map<string, Objet>::iterator it = PersoACopier.m_inventaire->getMap().begin();
+        while(it!=PersoACopier.m_inventaire->getMap().end())
         {
-            m_inventaire.addObjet(it->second);
+            m_inventaire->addObjet(it->second);
         }}
         
         
+}
+
+bool Personnage::IsAlive(){
+    if(getVie()>0)return true;
+    else return false;
 }
 Stats Personnage::getStats()
 {
@@ -338,13 +301,13 @@ void Personnage::ModifRace(string race)
 }
 void Personnage::recupererObjet(Objet obj)
 {
-    m_inventaire.addObjet(obj);
+    m_inventaire->addObjet(obj);
 }
 void Personnage::jeterObjet(Objet obj)
 {
-    m_inventaire.throwObjet(obj.getNom());
+    m_inventaire->throwObjet(obj.getNom());
 }
-Personnage Personnage::Attaquer(Personnage cible)
+void Personnage::Attaquer(Personnage &cible)
 {
      int valeur0 = rand()%20+1; int valeur1 = rand()%20+1;
      if(getStats().getStatfromString("AGI")-valeur0>cible.getStats().getStatfromString("AGI")-valeur1)
@@ -353,23 +316,36 @@ Personnage Personnage::Attaquer(Personnage cible)
         cible.PrendreDegats(100);
      }
      else cout << this->getNom() << " rate magnifiquement " << cible.getNom() << "..." << endl;
-    return cible;
 }
 void Personnage::PrendreDegats(int degats)
 {
     setVie(getVie()-degats);
-    cout << "Il reste à " << getNom() << " " <<getVie()<< " pvs" << endl;
+    cout << "Il reste a " << getNom() << " " <<getVie()<< " pvs" << endl;
 }
 
 void Personnage::setVie(int v)
 {
     m_vie= v;
 }
+void Personnage::Sauvegarde(){
+    ofstream MyExcelFile ;
+    MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app);
+    MyExcelFile << "\n";
+    MyExcelFile << this->getNom() + ";" ;
+    MyExcelFile << this->getAge() << " ans;";
+    MyExcelFile << this->getRace() + ";";
+    fflush(stdin);
 
-Inventaire Personnage::getInventaire()
-{
-    return m_inventaire;
-}
+    for(int it=0;it<5;it++)
+    {
+    MyExcelFile << this->getStats().getStatfromIndex(it) <<";";
+    } 
+    MyExcelFile << this->getVie() << ";";
+    MyExcelFile << "\n";
+
+    MyExcelFile.close();
+};
+
 Inventaire::Inventaire()
 {
 map <string, Objet> m_inventaire;
@@ -427,7 +403,7 @@ void Inventaire::throwObjet(string nom)
 void Inventaire::afficherInventaire()
 {
     map<std::string, Objet>::iterator it;
-    for(it= m_inventaire.begin(); it != m_inventaire.end();++it)
+    for(it= m_inventaire.begin(); it != m_inventaire.end();it++)
     {
         if(getObjet(it->first).getNbElement()>1){
         cout <<  getObjet(it->first).getNom() + "(" << getObjet(it->first).getNbElement()<< ") (" <<"poids: " << getObjet(it->first).getPoids()<< ")" << endl;
@@ -436,7 +412,29 @@ void Inventaire::afficherInventaire()
     }
     cout << "poids total: "<< m_poidsTotal << endl;
     cout << "poids restant: " << m_poidsmax-m_poidsTotal << endl;
+}
+void Inventaire::afficherArmes()
+{
+    map<std::string, Objet>::iterator it;
+    for(it=m_inventaire.begin(); it!= m_inventaire.end();it++)
+    {
+        if(getObjet(it->first).getType()==0)
+        {
+            cout << getObjet(it->first).getNom()  << endl;
+        }
     }
+}
+void Inventaire::afficherArmures()
+{
+    map<std::string, Objet>::iterator it;
+    for(it=m_inventaire.begin(); it!= m_inventaire.end();it++)
+    {
+        if(getObjet(it->first).getType()==1)
+        {
+            cout << getObjet(it->first).getNom() << endl;
+        }
+    }
+}
 void Inventaire::setPoidsMax(int poids) 
 {
     m_poidsmax=poids;
@@ -544,10 +542,12 @@ Stats::Stats(int tab[], int size)
 }
 int Stats::getStatfromString(string a)
 {
+    
     for(int i=0;i<(int)m_stats.size();i++)
     {
         if(m_stats[i].first==a) return m_stats[i].second;
     }
+    return 0;
 }
 int Stats::getStatfromIndex(int a)
 {
