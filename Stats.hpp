@@ -1,4 +1,13 @@
-#include <bits/stdc++.h>
+#ifndef Stats_Header
+#define Stats_Header
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <map>
+#include <fstream>
+#include <sstream>
 class Stats
 {
     private:
@@ -15,3 +24,4 @@ class Stats
     void SetStat(std::string a, int b);
     ~Stats(){};
 };
+#endif

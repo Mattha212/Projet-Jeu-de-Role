@@ -1,3 +1,6 @@
+#ifndef Objet_Header
+#define Objet_Header
+
 #include <bits/stdc++.h>
 #include <stdlib.h>
 #include <iostream>
@@ -21,6 +24,9 @@ class Objet
         int getType();
         ~Objet(){};
 };
+#endif
+#ifndef Arme_Header
+#define Arme_Header
 
 class Arme: public Objet
 {
@@ -37,6 +43,10 @@ class Arme: public Objet
         void equipe_OR_desequipe();
         ~Arme(){};
 };
+#endif
+
+#ifndef Armure_Header
+#define Armure_Header
 
 class Armure: public Objet
 {
@@ -52,3 +62,4 @@ class Armure: public Objet
         void equipe_OR_desequipe();
         ~Armure(){};
 };
+#endif

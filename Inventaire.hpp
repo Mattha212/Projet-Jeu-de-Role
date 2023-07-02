@@ -1,4 +1,8 @@
-#include "Objet.hpp"
+#ifndef Inventaire_Header
+#define inventaire_Header
+
+
+#include "Objet.cpp"
 #include <bits/stdc++.h>
 
 #//include "Arme.hpp"
@@ -29,3 +33,4 @@ public:
     ~Inventaire(){};
 
 };
+#endif

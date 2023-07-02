@@ -1,9 +1,21 @@
-#include "Creation.cpp"
-#include <bits/stdc++.h>
+#include "Personnage.cpp"
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <map>
+#include <fstream>
+#include <sstream>
+#include <stdlib.h>
 using namespace std;
 
 bool LePlusRapide(Personnage p1, Personnage p2){
     return p1.getStats().getStatfromString("VIT")>p2.getStats().getStatfromString("VIT");
+}
+bool PersoMort(Personnage p)
+{
+    if(p.getVie()<=0) return true;
+    else return false;
 }
 
 Personnage ChargerPerso(string nom)
@@ -42,11 +54,24 @@ Personnage ChargerPerso(string nom)
     if(p.getVie()!=vie)p.setVie(vie);
     return p;
 }
-
 void RoundDeCombat(vector<Personnage> &pjs){
     sort(pjs.begin(), pjs.end(), LePlusRapide);
     cout << pjs.at(0).getVie() << " " << pjs.at(1).getVie() << endl;
     for(auto &it :pjs){
+        if(!(pjs.at(0).IsAlive() * pjs.at(1).IsAlive())) {
+            if(!pjs.at(0).IsAlive() && pjs.at(1).IsAlive()){
+                cout << pjs.at(0).getNom() << " est mort!" << endl;
+                break;
+            }
+            else if(!pjs.at(1).IsAlive() && pjs.at(0).IsAlive()){
+                cout << pjs.at(1).getNom() << " est mort!" << endl;
+                break;
+            }
+            else if(!pjs.at(0).IsAlive() && !pjs.at(1).IsAlive()){
+                cout << pjs.at(0).getNom() <<" et " << pjs.at(1).getNom() << " sont mort!" << endl;
+                break;
+            }
+        }
         cout << "c'est le tour de " << it.getNom() << ", que va-t-il faire?" << endl;
         cout << "1: se soigner, 2: attaquer quelqu'un" << endl;
         int action;
@@ -87,6 +112,7 @@ int main(int argc, char* argv[])
     /*Personnage p1 = ps.at(0), p2 = ps.at(1);
     ps = {p1, p2};*/
     cout << ps.at(0).getVie() << " " << ps.at(1).getVie() << endl;
+    
     }
     /*while(p2.IsAlive()){
     p1.Attaquer(p2);

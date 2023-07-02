@@ -1,5 +1,8 @@
-#include "Inventaire.hpp"
-#include "Stats.hpp"
+#ifndef Personnage_Header
+#define Personnage_Header
+
+#include "Inventaire.cpp"
+#include "Stats.cpp"
 #include <bits/stdc++.h>
 
 class Personnage
@@ -33,7 +36,7 @@ class Personnage
         ~Personnage(){delete m_inventaire;};
 };
 
-
+#endif
 
 
 
