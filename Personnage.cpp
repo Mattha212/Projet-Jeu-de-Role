@@ -1,6 +1,7 @@
 #include "Personnage.hpp"
 using namespace std;
 
+
 void lire(string s)
 {
     string s1 = s + ".txt";
@@ -16,16 +17,6 @@ void lire(string s)
     }
 }
 
-int PairCountFelement(Stats v,string a)
-{
-    int nb =0;
-    for(int i=0;i<v.getSize();i++)
-    {   
-        if(v.getChar(i)==a)nb++; 
-    }
-    return nb;
-}
-
 
 void Personnage::CreerPersonnage()
 {
@@ -39,12 +30,11 @@ void Personnage::CreerPersonnage()
     getline(cin,nom) ;
     fflush(stdin);
     m_nom=nom;
-    const string s =  "1 : Precisions sur les humains 2 : Precisions sur les elfes 3: Precisions sur les orcs 0 : Entrer votre race";
+    cout << "1 : Precisions sur les humains 2 : Precisions sur les elfes 3: Precisions sur les orcs 0 : Entrer votre race" << endl;
     
     vector<string> tab = {"elfe", "orc","humain"};
     while(race.empty())
     {
-        if(compteur%2==0 || compteur ==0)cout<<s<<endl;
         cin >> bouton;
         switch(bouton)
         {
@@ -59,23 +49,16 @@ void Personnage::CreerPersonnage()
             break;
             case 0:
             cout << "Votre race:"<< endl;
+            do{
             cin >> race;
+            auto breakthecasseLow = [](char& lettre) {
+                return tolower(lettre);
+                };
+            transform(race.begin(), race.end(), race.begin(), breakthecasseLow);
+            if (count(tab.begin(), tab.end(), race) >= 1) break;
+            cout << "Ce n'est pas une race disponible!" << endl;
 
-            for(int i=0; i<(int)race.size();i++)
-            {
-                 if(race[i]<=90) race[i]+=32;
-            }
-
-            while(count(tab.begin(),tab.end(),race)<1)
-            {
-                cout << "Ce n'est pas une race disponible!" << endl;
-                cin >> race;
-                for(int i=0; i<(int)race.size();i++)
-                {
-                    if(race[i]<=90) race[i]+=32;
-                }
-
-            }
+            } while(true);
             break;
             default:
             cout << "Ce n est pas un choix possible"<< endl;
@@ -89,8 +72,7 @@ void Personnage::CreerPersonnage()
     map<int, int> v;
     v[valeur0] ++;v[valeur1] ++;v[valeur2] ++;v[valeur3] ++;v[valeur4] ++;
     m_race=race;
-    bool test1 =false; 
-    while(!test1)
+    while(true)
     {    
         map<int, int>::iterator it = v.begin();
         while(it!= v.end())
@@ -100,57 +82,48 @@ void Personnage::CreerPersonnage()
         }
         cout << endl;
         m_stats.AfficheStats();
-        cout << "A quelle statistique voulez vous attribuer une valeur?"<< endl;
-        string a;
-        cin >> a;
-        for(int i=0; i<(int)a.size();i++)
-        {
-            if(a[i]>=97) a[i]-=32;
-        }
-       
-       while(PairCountFelement(m_stats,a)==0)
-        {
+        string statistique;
+        while (true) {
+            cout << "A quelle statistique voulez vous attribuer une valeur?" << endl;
+            cin >> statistique;
+            auto breakthecasseSup = [](char& lettre) {
+                return toupper(lettre);
+                };
+            transform(statistique.begin(), statistique.end(), statistique.begin(), breakthecasseSup);
+            if (m_stats.CountFelement(statistique) != 0) break;
             cout << "ce n'est pas une stat valide!" << endl;
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "A quelle statistique voulez vous attribuer une valeur?"<< endl;
-            cin >> a;
-            for(int i=0; i<(int)a.size();i++)
-            {
-                if(a[i]>=97) a[i]-=32;
-            }
         }
-        
-        cout << "Quelle valeur voulez vous donner a cette statistique?"<< endl;
-        int b;
-        while(!(cin>>b) || b > 20 || v[b]==0)
+
+        int valeur;
+        while(!(cin>> valeur) || valeur > 20 || v[valeur]==0)
         {
-            v.erase(b);
+            cout << "Quelle valeur voulez vous donner a la statistique " + statistique + " ?" << endl;
+            v.erase(valeur);
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "ce n'est pas une valeur disponible!" << endl;
-            cout << "Quelle valeur voulez vous donner a la statistique " + a + " ?"<< endl;
         }
-        if(PairCountFelement(m_stats,a)>0) 
+
+        if(m_stats.CountFelement(statistique)>0)
         {
             
-            if(m_stats.getStatfromString(a)>0)
+            if(m_stats.getStatfromString(statistique)>0)
             {
-                v[m_stats.getStatfromString(a)]++;
-                m_stats.SetStat(a,b);
-                v[b]--;
+                v[m_stats.getStatfromString(statistique)]++;
+                m_stats.SetStat(statistique, valeur);
+                v[valeur]--;
             }
             else{
-                m_stats.SetStat(a,b);
-                switch(v[b])
+                m_stats.SetStat(statistique, valeur);
+                switch(v[valeur])
                 {
                     case 0:
-                    v.erase(b);
+                    v.erase(valeur);
                     default:
-                    v[b]--;
+                    v[valeur]--;
                 }
         }}
-        if(v[valeur0] +v[valeur1] +v[valeur2] + v[valeur3] +v[valeur4]<=0)test1=true;
+        if(v[valeur0] +v[valeur1] +v[valeur2] + v[valeur3] +v[valeur4]<=0)break;
     }
     ModifRace(m_race);
     m_stats.AfficheStats();
@@ -195,6 +168,7 @@ Personnage::Personnage(Personnage const& PersoACopier)
         while(it!=PersoACopier.m_inventaire->getMap().end())
         {
             m_inventaire->addObjet(it->second);
+            it++;
         }}
         
         
@@ -262,10 +236,10 @@ void Personnage::Attaquer(Personnage &cible)
      int valeur0 = rand()%20+1; int valeur1 = rand()%20+1;
      if(getStats().getStatfromString("AGI")-valeur0>cible.getStats().getStatfromString("AGI")-valeur1)
      {
-        cout << this->getNom() << " attaque violemment " << cible.getNom() << " !" << endl;
+        cout << getNom() << " attaque violemment " << cible.getNom() << " !" << endl;
         cible.PrendreDegats(100);
      }
-     else cout << this->getNom() << " rate magnifiquement " << cible.getNom() << "..." << endl;
+     else cout << getNom() << " rate magnifiquement " << cible.getNom() << "..." << endl;
 }
 void Personnage::PrendreDegats(int degats)
 {
@@ -279,18 +253,18 @@ void Personnage::setVie(int v)
 }
 void Personnage::Sauvegarde(){
     ofstream MyExcelFile ;
-    MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app);
+    MyExcelFile.open("..\\test.csv", fstream::app);
     MyExcelFile << "\n";
-    MyExcelFile << this->getNom() + ";" ;
-    MyExcelFile << this->getAge() << " ans;";
-    MyExcelFile << this->getRace() + ";";
-    fflush(stdin);
+    MyExcelFile << getNom() + ";" ;
+    MyExcelFile << getAge() << " ans;";
+    MyExcelFile << getRace() + ";";
+    fflush(stdin);  
+    auto v = m_stats.getStat();
+    for_each(v.begin(), v.end(), [&](auto& it) mutable {
+        MyExcelFile << it.second  << ";";
+        });
 
-    for(int it=0;it<5;it++)
-    {
-    MyExcelFile << this->getStats().getStatfromIndex(it) <<";";
-    } 
-    MyExcelFile << this->getVie() << ";";
+    MyExcelFile << getVie() << ";";
     MyExcelFile << "\n";
 
     MyExcelFile.close();

@@ -2,8 +2,7 @@
 #define inventaire_Header
 
 
-#include "Objet.cpp"
-#include <bits/stdc++.h>
+#include "Objet.hpp"
 
 #//include "Arme.hpp"
 

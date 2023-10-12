@@ -5,13 +5,16 @@ Stats::Stats()
 {
     m_size = 5;
     int i =-1;
-    vector<pair<string, int>> v(m_size);
-    v[0] = make_pair("AGI",i);
-    v[1] = make_pair("CHA",i);
-    v[2] = make_pair("CON",i);
-    v[3] = make_pair("INT",i);
-    v[4] = make_pair("VIT",i);
-    m_stats=v;
+    {
+        map<std::string, int> v;
+        v["AGI"] = i; 
+        v["CHA"] = i; 
+        v["CON"] = i; 
+        v["INT"] = i; 
+        v["VIT"] = i; 
+        fill(m_valeurs.begin(), m_valeurs.end(), i);
+        m_tabstat = v;
+    }
 }
 int Stats::getSize()
 {
@@ -23,13 +26,18 @@ Stats::Stats(int tab[], int size)
     try
     {
         if(m_size==5){
-            vector<pair<string, int>> v(5);
-            v[0] = make_pair("AGI",tab[0]);
-            v[1] = make_pair("CHA",tab[1]);
-            v[2] = make_pair("CON",tab[2]);
-            v[3] = make_pair("INT",tab[3]);
-            v[4] = make_pair("VIT",tab[4]);
-            m_stats=v;
+            map<std::string, int> v;
+            v["AGI"] = tab[0];
+            v["CHA"] = tab[1];
+            v["CON"] = tab[2];
+            v["INT"] = tab[3];
+            v["VIT"] = tab[4];
+            m_valeurs.push_back(v["AGI"]);
+            m_valeurs.push_back(v["CHA"]);
+            m_valeurs.push_back(v["CON"]);
+            m_valeurs.push_back(v["INT"]);
+            m_valeurs.push_back(v["VIT"]);
+            m_tabstat =v;
         }
     
         else throw (size);
@@ -41,32 +49,38 @@ Stats::Stats(int tab[], int size)
 }
 int Stats::getStatfromString(string a)
 {
+    return m_tabstat[a];
     
-    for(int i=0;i<(int)m_stats.size();i++)
-    {
-        if(m_stats[i].first==a) return m_stats[i].second;
-    }
     return 0;
-}
-int Stats::getStatfromIndex(int a)
-{
-    return m_stats[a].second;
 }
 void Stats::AfficheStats()
 {
-    for(int i=0;i<(int)m_stats.size();i++)
+    for(auto it = m_tabstat.begin(); it!= m_tabstat.end(); ++it)
     {
-        cout << m_stats[i].first << ": " << m_stats[i].second << " ";
+        cout << it->first << ": " << it->second << " ";
     }
 }
-string Stats::getChar(int index)
-{
-    return m_stats[index].first;
-}
+
 void Stats::SetStat(string a, int b)
 {
-    for(int i=0;i<(int)m_stats.size();i++)
-    {
-        if(m_stats[i].first==a)  m_stats[i].second = b;
-    }
+         m_tabstat[a]= b;
 }
+
+//void Stats::applyRaceModifier(string race) {
+//    enum classe_code {
+//        cElfe,
+//        cHumain,
+//        cOrc
+//    };
+//    auto type_race = [&](string l_race)-> classe_code {
+//        if (l_race == "Elfe") return cElfe;
+//        if (l_race == "Humain") return cHumain;
+//        if (l_race == "Orc") return cOrc;
+//        };
+//    switch (type_race(race)) {
+//    case cElfe:
+//        m_tabstats
+//    }
+//
+//
+//}

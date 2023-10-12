@@ -1,9 +1,10 @@
 #ifndef Objet_Header
 #define Objet_Header
 
-#include <bits/stdc++.h>
 #include <stdlib.h>
 #include <iostream>
+#include <map>
+#include <algorithm>
 class Objet
 {
     private:

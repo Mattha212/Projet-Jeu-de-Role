@@ -1,9 +1,8 @@
 #ifndef Personnage_Header
 #define Personnage_Header
 
-#include "Inventaire.cpp"
-#include "Stats.cpp"
-#include <bits/stdc++.h>
+#include "Inventaire.hpp"
+#include "Stats.hpp"
 
 class Personnage
 {
@@ -16,8 +15,25 @@ class Personnage
         Stats m_stats;      
     public:
         Personnage();
+        Personnage(std::string name, int age, std::string race, int* stats, Inventaire stuff);
         Personnage(Personnage const& PersoACopier);
-        Personnage(std::string name, int age, std::string race, int *stats, Inventaire stuff);
+        ~Personnage() { delete [] m_inventaire; };
+        void swap(Personnage& autre) noexcept {
+            using std::swap;
+            swap(m_nom, autre.m_nom);
+            swap(m_age, autre.m_age);
+            swap(m_race, autre.m_race);
+            swap(m_inventaire, autre.m_inventaire);
+            swap(m_stats, autre.m_stats);
+
+        }
+        Personnage& operator=(const Personnage& autre) {
+            Personnage{ autre }.swap(*this);
+            return *this;
+        }
+        
+
+
         void CreerPersonnage();
         std::string getNom();
         void ModifRace(std::string race);
@@ -33,7 +49,7 @@ class Personnage
         void Attaquer(Personnage &cible);
         void PrendreDegats(int degats);
         void Sauvegarde();
-        ~Personnage(){delete m_inventaire;};
+
 };
 
 #endif

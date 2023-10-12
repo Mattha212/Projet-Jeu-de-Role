@@ -1,12 +1,4 @@
-#include "Personnage.cpp"
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <map>
-#include <fstream>
-#include <sstream>
-#include <stdlib.h>
+#include "Personnage.hpp"
 using namespace std;
 
 bool LePlusRapide(Personnage p1, Personnage p2){
@@ -21,8 +13,8 @@ bool PersoMort(Personnage p)
 Personnage ChargerPerso(string nom)
 {
     ifstream MyExcelFile ;
-    MyExcelFile.open("C:\\Users\\wyzma\\Documents\\VSCODE\\C++\\Test_JDR\\test.csv", fstream::app); 
-    string line, word; int i =1;string  race; int age; int stat[5];int vie =0;
+    MyExcelFile.open("..\\test.csv", fstream::app); 
+    string line, word; int i =1;string  race; int age=0; int stat[5];int vie =0;
     bool test = false;
     while(getline(MyExcelFile, line)  && !test)
     {
@@ -55,8 +47,9 @@ Personnage ChargerPerso(string nom)
     return p;
 }
 void RoundDeCombat(vector<Personnage> &pjs){
+    cout << "debut du tour" << endl;
+    cout << pjs[0].getNom() + ": " << pjs.at(0).getVie() << " PVs" << " " << pjs[1].getNom() + ": " << pjs.at(1).getVie() << " PVs" << endl;
     sort(pjs.begin(), pjs.end(), LePlusRapide);
-    cout << pjs.at(0).getVie() << " " << pjs.at(1).getVie() << endl;
     for(auto &it :pjs){
         if(!(pjs.at(0).IsAlive() * pjs.at(1).IsAlive())) {
             if(!pjs.at(0).IsAlive() && pjs.at(1).IsAlive()){
@@ -67,7 +60,7 @@ void RoundDeCombat(vector<Personnage> &pjs){
                 cout << pjs.at(1).getNom() << " est mort!" << endl;
                 break;
             }
-            else if(!pjs.at(0).IsAlive() && !pjs.at(1).IsAlive()){
+            else{
                 cout << pjs.at(0).getNom() <<" et " << pjs.at(1).getNom() << " sont mort!" << endl;
                 break;
             }
@@ -79,10 +72,12 @@ void RoundDeCombat(vector<Personnage> &pjs){
         switch(action){
             case 1:
             //utiliser un sort de soin (faut gérer la mana et les sorts)
+                cout << "la feature sera bientot disponible" << endl;
+                break;
             case 2:{
-            int i =0;
-            for(vector<Personnage>::iterator it1=pjs.begin(); it1 !=pjs.end();it1++ ){
-                 cout << i << ": " << (*it1).getNom() << " " ; i++;}
+            for_each(pjs.begin(), pjs.end(), [&, i = 0](auto& it1) mutable {
+                cout << i << ": " << (it1).getNom() << " "; i++;
+                });
                  cout << endl;
             cout << "qui attaquer? Donnez le numero du personnage" << endl;
             int cible;
@@ -95,27 +90,25 @@ void RoundDeCombat(vector<Personnage> &pjs){
             break;
         }
     }
+    cout << "fin du tour" << endl;
+    cout << pjs[0].getNom() + ": " << pjs.at(0).getVie() << " " << pjs[1].getNom() + ": " << pjs.at(1).getVie() << endl;
+
+
     //return pjs;
 };
+
 
 
 int main(int argc, char* argv[])
 {
     srand((unsigned) time(NULL));
-    Personnage p1 = ChargerPerso("Jugad"); Personnage p2 = ChargerPerso("victime");
-    vector<Personnage> ps= {p1,p2};
-
-    while(ps.at(0).IsAlive() && ps.at(1).IsAlive()){
-    cout << ps.at(0).getVie() << " " << ps.at(1).getVie() << endl;
-    RoundDeCombat(ps);
-    cout << "fin du tour" << endl;
-    /*Personnage p1 = ps.at(0), p2 = ps.at(1);
-    ps = {p1, p2};*/
-    cout << ps.at(0).getVie() << " " << ps.at(1).getVie() << endl;
-    
-    }
-    /*while(p2.IsAlive()){
-    p1.Attaquer(p2);
-    }*/
+   Personnage p1 = ChargerPerso("Jugad");
+   //Personnage p2 = ChargerPerso("victime");
+   // vector<Personnage> ps= {p1,p2};
+   // while (ps.at(0).IsAlive() && ps.at(1).IsAlive()) {
+   //     RoundDeCombat(ps);
+   // }
+   Personnage p = Personnage();
+   cout << p.getNom() << endl;
     return 0;
 } 
