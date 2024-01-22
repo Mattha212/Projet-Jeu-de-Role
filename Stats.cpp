@@ -65,22 +65,3 @@ void Stats::SetStat(string a, int b)
 {
          m_tabstat[a]= b;
 }
-
-//void Stats::applyRaceModifier(string race) {
-//    enum classe_code {
-//        cElfe,
-//        cHumain,
-//        cOrc
-//    };
-//    auto type_race = [&](string l_race)-> classe_code {
-//        if (l_race == "Elfe") return cElfe;
-//        if (l_race == "Humain") return cHumain;
-//        if (l_race == "Orc") return cOrc;
-//        };
-//    switch (type_race(race)) {
-//    case cElfe:
-//        m_tabstats
-//    }
-//
-//
-//}

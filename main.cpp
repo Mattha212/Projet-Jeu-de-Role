@@ -103,11 +103,6 @@ int main(int argc, char* argv[])
 {
     srand((unsigned) time(NULL));
    Personnage p1 = ChargerPerso("Jugad");
-   //Personnage p2 = ChargerPerso("victime");
-   // vector<Personnage> ps= {p1,p2};
-   // while (ps.at(0).IsAlive() && ps.at(1).IsAlive()) {
-   //     RoundDeCombat(ps);
-   // }
    Personnage p = Personnage();
    cout << p.getNom() << endl;
     return 0;
