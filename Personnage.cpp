@@ -255,16 +255,16 @@ void Personnage::Sauvegarde(){
     ofstream MyExcelFile ;
     MyExcelFile.open("..\\test.csv", fstream::app);
     MyExcelFile << "\n";
-    MyExcelFile << getNom() + ";" ;
+    MyExcelFile << getNom() + "," ;
     MyExcelFile << getAge() << " ans;";
-    MyExcelFile << getRace() + ";";
+    MyExcelFile << getRace() + ",";
     fflush(stdin);  
     auto v = m_stats.getStat();
     for_each(v.begin(), v.end(), [&](auto& it) mutable {
-        MyExcelFile << it.second  << ";";
+        MyExcelFile << it.second  << ",";
         });
 
-    MyExcelFile << getVie() << ";";
+    MyExcelFile << getVie() << ",";
     MyExcelFile << "\n";
 
     MyExcelFile.close();

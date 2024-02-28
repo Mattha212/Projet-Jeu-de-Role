@@ -19,10 +19,10 @@ Personnage ChargerPerso(string nom)
     while(getline(MyExcelFile, line)  && !test)
     {
     stringstream str(line), ss;
-    getline(str, word, ';');
+    getline(str, word, ',');
     if(word==nom)
     {
-        while(getline(str, word, ';') && i<9)
+        while(getline(str, word, ',') && i<9)
         {
             switch(i)
             {
